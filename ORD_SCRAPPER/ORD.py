@@ -268,9 +268,9 @@ def click_all_view_full_details_on_dataset(driver, dataset_dir):
             WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, "div#inputs, div#outcomes, h1, h2"))
             )
-            print(f"✔ Full details page loaded for button #{idx+1}")
+            print(f"Full details page loaded for button #{idx+1}")
         except TimeoutException:
-            print(f"❌ Timeout: full details page did not load for button #{idx+1}")
+            print(f"Timeout: full details page did not load for button #{idx+1}")
 
         scrape_ord_details(driver, details_url, dataset_dir)
         time.sleep(3)
@@ -279,7 +279,7 @@ def click_all_view_full_details_on_dataset(driver, dataset_dir):
         driver.switch_to.window(original_window)
         print(f"Returned to dataset page after clicking full details #{idx+1} of {len(a_links)}.")
 
-    print("✅ Done clicking all View Full Details buttons in current dataset link!\n")
+    print("Done clicking all View Full Details buttons in current dataset link!\n")
 
 def set_dataset_pagination_to_100(driver):
     try:
@@ -292,27 +292,27 @@ def set_dataset_pagination_to_100(driver):
         time.sleep(1)
         try:
             Select(dropdown).select_by_value("100")
-            print("✔ Changed dataset entries to 100 (via Select)")
+            print("Changed dataset entries to 100 (via Select)")
         except:
             driver.execute_script("""
                 var s=document.querySelector('div.select select#pagination');
                 s.value='100';
                 s.dispatchEvent(new Event('change',{bubbles:true}));
             """)
-            print("✔ Changed dataset entries to 100 (via JS fallback)")
+            print("Changed dataset entries to 100 (via JS fallback)")
         time.sleep(2)
     except Exception as e:
-        print(f"❌ Could not set dataset pagination dropdown: {e}")
+        print(f"Could not set dataset pagination dropdown: {e}")
 
 def wait_for_dataset_to_load(driver):
     try:
         WebDriverWait(driver, 20).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, "div#overview, .card-header, h1, h2"))
         )
-        print("✔ Dataset page loaded!")
+        print("Dataset page loaded!")
         return True
     except Exception as e:
-        print(f"❌ Timeout waiting for dataset page to load: {e}")
+        print(f"Timeout waiting for dataset page to load: {e}")
         return False
 
 def process_current_page(driver, scrapped_data_dir):
@@ -339,7 +339,7 @@ def process_current_page(driver, scrapped_data_dir):
                 dataset_dir = os.path.join(scrapped_data_dir, f"DATASET_{i+1}")
             os.makedirs(dataset_dir, exist_ok=True)
             click_all_view_full_details_on_dataset(driver, dataset_dir)
-            print(f"🔔 Now moving to the next dataset link (if any)...\n")
+            print(f"Now moving to the next dataset link (if any)...\n")
             time.sleep(10)
         else:
             print("Could not verify dataset loaded (timeout or structure change).")
@@ -365,9 +365,9 @@ if __name__ == "__main__":
         driver.execute_script("arguments[0].scrollIntoView();", browse_link)
         time.sleep(0.5)
         browse_link.click()
-        print("✔ Clicked Browse in navbar!")
+        print("Clicked Browse in navbar!")
     except TimeoutException:
-        print("❌ Could not find the Browse link in navbar!")
+        print("Could not find the Browse link in navbar!")
         driver.quit()
         exit(1)
 
@@ -384,17 +384,17 @@ if __name__ == "__main__":
             time.sleep(1)
             try:
                 Select(dropdown).select_by_value("100")
-                print("✔ Changed browse entries to 100 (via Select)")
+                print("Changed browse entries to 100 (via Select)")
             except:
                 driver.execute_script("""
                     var s=document.querySelector('div.select select#pagination');
                     s.value='100';
                     s.dispatchEvent(new Event('change',{bubbles:true}));
                 """)
-                print("✔ Changed browse entries to 100 (via JS fallback)")
+                print("Changed browse entries to 100 (via JS fallback)")
             time.sleep(3)
         except Exception as e:
-            print(f"❌ Could not set browse pagination dropdown: {e}")
+            print(f"Could not set browse pagination dropdown: {e}")
 
     page = 1
     last_page = 1
@@ -407,7 +407,7 @@ if __name__ == "__main__":
             last_page = int(last_page_elem.text.strip())
             next_btn = driver.find_element(By.CSS_SELECTOR, "div.next.paginav span.word")
             if "disabled" in next_btn.get_attribute("class"):
-                print("❌ NEXT disabled -> Finished!")
+                print("NEXT disabled -> Finished!")
                 break
             driver.execute_script("arguments[0].scrollIntoView(true);", next_btn)
             next_btn.click()
@@ -415,12 +415,13 @@ if __name__ == "__main__":
             current_page_elem = driver.find_element(By.CSS_SELECTOR, ".paginav .button.word.selected")
             current_page = int(current_page_elem.text.strip())
             if current_page == 1 and page != 1:
-                print("❌ Went back to page 1 unexpectedly -> Exiting loop!")
+                print("Went back to page 1 unexpectedly -> Exiting loop!")
                 break
             page += 1
-            print(f"✔ NEXT clicked (page {page})")
+            print(f"NEXT clicked (page {page})")
         except Exception as e:
             print("No NEXT button or error -> Finished!", e)
             break
+
 
     driver.quit()
